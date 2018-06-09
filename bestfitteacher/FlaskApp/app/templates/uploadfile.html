@@ -1,9 +1,0 @@
-
-{%extends "header.html" %}
-{% block body %}
-<h3>Upload file</h3>
-<form id="upload-file-form" action="{{url_for('uploadfile')}}" method="POST" enctype="multipart/form-data">
-    <input type="file" name="file" accept="application/pdf" multiple>
-    <input type="submit" value="Upload">
-</form>
-{% endblock %}
