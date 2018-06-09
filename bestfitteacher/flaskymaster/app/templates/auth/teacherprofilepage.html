@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block body %}
+
+
+<body>
+<div class="page-header">
+    <h1>Edit Profile</h1>
+</div>
+<div class="img">
+    <img src="{{url_for('static', filename='{{thisteacher.profilephotoloc}}')}}"
+         class="img-rounded profile-thumbnail" alt="User Image">
+</div>
+<div class="img">
+    <form id="upload-file-form" action="{{url_for('auth.uploadprofilephoto')}}" method="POST"
+          enctype="multipart/form-data">
+
+        <input class="btn btn-primary" type="file" name="file" accept="application/jpg" multiple>
+        <input class="btn  btn-default" type="submit" value="Upload Photo">
+
+    </form>
+
+</div>
+
+
+<div class="col-md-4">
+    {{ wtf.quick_form(form,button_map={'submit':'success'}) }}
+</div>
+</body>
+{% endblock %}
