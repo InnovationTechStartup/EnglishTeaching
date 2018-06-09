@@ -1,0 +1,39 @@
+{%extends "appstartbase.html" %}
+{% block body %}
+
+            <!--<table class="table table-bordered table-striped" style="width:30%;align:left;float: left;">-->
+                <!--{% for item in data %}-->
+                <!--<tr>-->
+                    <!--<td><a href="{{ url_for('auth.bookdisplay',thisbookname=item.bookname)}}">{{item.bookname[:-8]}}</a></td>-->
+                <!--</tr>-->
+                <!--{% endfor %}-->
+            <!--</table>-->
+
+            <table class="table ">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Book Name</th>
+                  <th>Uploaded on</th>
+                  <th>Remove the book</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for item in data %}
+                <tr>
+                  <th scope="row"></th>
+                  <td><a href="{{ url_for('auth.firstpagedisplay',thisbookname=item.bookname)}}">{{item.bookname[:-8]}}</a></td>
+                  <td><a >{{item.last_read}}</a></td>
+                  <td><form method="post" action="{{ url_for('auth.remove', id=item.id) }}">
+  <button class="btn btn-primary" type="submit">Delete</button>
+</form></td>
+                </tr>
+               {% endfor %}
+              </tbody>
+            </table>
+
+
+
+{% endblock %}
+
+

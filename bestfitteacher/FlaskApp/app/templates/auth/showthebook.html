@@ -1,0 +1,649 @@
+{%extends "appstartbase.html" %}
+
+{% block body %}
+
+<style>
+	.row-container {display: flex; width: 100%; height: 100%; flex-direction: column; background-color: blue; overflow: hidden;}
+.first-row {background-color: lime; }
+.second-row { flex-grow: 1; border: none; margin: 0; padding: 0; }
+
+#div1
+{ float: left; height:60%; width: 40%; }
+
+#div2
+{ float: right; height:60%; width: 60%; }
+
+
+
+
+
+</style>
+
+
+<div id="div2" class="container">
+    <ul class="list-inline">
+        <li>                <button onclick="refreshpage()" id="refreshpage"  class="btn btn-primary previous" value="RefreshPDFPage">
+                    Refresh pdf page
+                </button></li>
+        <li> {{thispagenumber}}
+        <form id="form6" action={{url_for('auth.gotopage')}}  class="form-inline pull-left" method="post">
+        <input value="Go to" type="submit" class="btn btn-primary ml-auto" id=gotoq > </input>
+        <input id=texbox_qn name="thispagenumber" type="text" placeholder="page number">  </input> <span
+            style="display:inline-block; width: 87.7%;"></span>
+</form>
+        </li>
+        <li class="list-inline-item">
+
+            <form id="form4" action="" class="form-inline pull-left" method="post">
+
+                <button id="previouspagepdf" type="submit" class="btn btn-primary previous" value="createnotes">
+                    Previous page
+                </button>
+            </form>
+        </li>
+        <li class="list-inline-item">
+            <form id="form3" action="{{url_for('auth.makeflashcard')}}"
+                  class="form-inline pull-left"
+                  method="post">
+                <button type="submit" class="btn btn-rounded btn-purple" value="createnotes"> Add to notes (PPT and Flashcard)
+                </button>
+            </form>
+        </li>
+
+
+        <li class="list-inline-item">
+            <form id="form5" action="" class="form-inline pull-left" method="post">
+                <button id="nextpagepdf" type="submit" class="btn btn-primary next" value="createnotes"> Next
+                    page
+                </button>
+            </form>
+        </li>
+        <li class="list-inline-item">
+            <div class="form-group form-inline unselectable">
+
+
+                <ul class="list-inline">
+                    <li class="list-inline-item">
+                        <form action="" id=form1 method="post" class="unselectable form-inline"
+                              style="position: fixed;">
+                            <div>
+                                <label class="unselectable form-control bg-danger text-white" for="topic">
+                                    Topic </label>
+                                <input class="unselectable form-control bg-primary text-white"
+                                       name="selectiontype"
+                                       id="topic"
+                                       value="question" type="radio">
+
+
+                                <input class="unselectable form-control bg-primary text-white"
+                                       name="TextBoxq" id="TextBoxq"
+                                       value="0"
+                                       type="text" hidden>
+                                <label class="unselectable form-control bg-rounded bg-orange text-white"
+                                       for="question"> Question
+                                    part</label>
+                                <input class="unselectable form-control bg-primary text-white"
+                                       name="selectiontype"
+                                       id="question"
+                                       value="question" type="radio">
+                                <input class="unselectable form-control bg-primary text-white"
+                                       name="TextBoxa" id="TextBox"
+                                       value="0"
+                                       type="text" hidden>
+                                <label class="unselectable form-control bg-green-bright text-white"
+                                       for="answer"> Answer
+                                    part</label>
+                                <input class="unselectable form-control bg-primary text-white"
+                                       name="selectiontype"
+                                       id="answer"
+                                       value="answer" checked="checked" type="radio">
+
+
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="emailInput">Email address</label>
+                                <input value="sharmaatul11@gmail.com" type="email" class="form-control"
+                                       id="emailInput"
+                                       placeholder="Email"
+                                       hidden>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="nameInput">Name</label>
+                                <input value="Atul Kumar" type="text" class="form-control" id="nameInput"
+                                       placeholder="First Name" hidden>
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                <button id="savechanges" type="submit" class="list-inline-item btn btn-primary">Save
+                                    Changes
+                                </button>
+                                <!--<button class="btn btn-default" onclick="hidehighlights()" value="makecsv" > Make CSV</button>-->
+
+                            </div>
+
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+
+
+                            &nbsp; &nbsp;
+
+                        </form>
+
+                    </li>
+                </ul>
+
+            </div>
+        </li>
+
+    </ul>
+
+</div>
+<br>
+<div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
+<div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
+
+<!--<div>-->
+<!--<form id="form2" action="/uploadwebaddress" class="form-inline" method="post">-->
+<!--<div class="form-group">-->
+<!--<label class="unselectable form-control bg-primary text-white" for="web_address">Web address:</label>-->
+<!--<input value="{{request.form.web_add_name}}" type="text" class="form-control" name=web_add_name id="web_address" placeholder="www.">-->
+<!--<label class="unselectable form-control bg-primary text-white" for="web_address_name">Name it as: </label>-->
+<!--<input name=web_name value="{{request.form.web_add_name}}"  type="text" class="form-control" id="web_address_name" placeholder="google">-->
+<!--<button type="submit" class="btn btn-default" value="Readthiswebpage"> Read this webpage-->
+<!--</button>-->
+<!--</div>-->
+<!--</form>-->
+<!--</div>-->
+<!--<br><br><br>-->
+<!--<div>-->
+<!--<form id="form3" action="/makeflashcard" class="form-inline" method="post">-->
+<!--<div class="form-group">-->
+<!--<button type="submit" class="btn btn-default" value="UploadData"> Upload highlighted data-->
+<!--</button>-->
+<!--</div>-->
+<!--</form>-->
+<!--<form id="form4" action="/showflashcard" class="form-inline" method="post">-->
+<!--<div class="form-group">-->
+<!--<button type="submit" class="btn btn-default" value="shoflashc"> Show Flash Card-->
+<!--</button>-->
+<!--</div>-->
+<!--</form>-->
+<!--</div>-->
+<iframe id="myIframe" src="{{ url_for('static',filename=filename)}}" scrolling="yes" width="100%" height="1000"
+        frameborder="0"></iframe>
+
+
+<script>
+
+var contentbody= $('#myIframe').contents().find('html').html();
+var previoustag=0;
+var qadata=[]
+var qdata1=[]
+var currentquestion=''
+var currentanswer=''
+var currenttopic=''
+var currentcomment=''
+var qcount=0
+var qanumber=0
+var previouscommenttag=0;
+
+$(document).ready(function() {
+
+	$('#form1').on('submit', function(event) {
+
+var labelcount=$('#myIframe').contents().find("label").length
+//alert(labelcount)
+
+var counter=0
+
+$('#myIframe').contents().find("label").each(function (i) {
+
+
+        labeltitle=$(this).attr('title')
+        //alert(labeltitle)
+        if (typeof labeltitle !== typeof undefined && labeltitle !== false){
+                if(labeltitle.includes("topic"))
+        {
+          if(previouscommenttag==1)
+            {
+            currenttopic='';
+             currenttopic= currenttopic+ $(this).text();
+             previouscommenttag=0;
+             }
+         else{
+         currenttopic= currenttopic+ $(this).text();
+
+         }
+        }
+
+
+        if(labeltitle.includes("question"))
+        {
+
+        //alert($(this).text())
+             if(previoustag==1)
+            {   qdata1[qcount]=[qcount+1,currentquestion,currentanswer]
+                qcount=qcount+1
+                qanumber=qanumber+1
+                qadata.push(new qadatafunc(qanumber,currentquestion, currentanswer,currenttopic));
+
+               // alert(  "Question :" + currentquestion+ "  " + "Answer:" + "   " + currentanswer)
+
+                currentquestion=$(this).text()
+                currentanswer=''
+                previoustag=0
+
+            }
+            else if(previoustag==0)
+            {
+                currentquestion= currentquestion+$(this).text()
+
+              // alert("I am here")
+            }
+
+       // previoustag=0
+       // alert($(this).text())
+        }
+        if(labeltitle.includes("answer"))
+        {
+       // alert($(this).text())
+       // if(previoustag==0)
+            currentanswer= currentanswer+$(this).text()
+            previoustag=1
+            previouscommenttag=1;
+
+       // alert($(this).text())
+        }
+
+}
+//alert("Counter  " + i + ":" + $(this).text())
+
+});
+
+//alert("Question :" + currentquestion+ "  " + "Answer:" + "   " + currentanswer)
+qdata1[qcount]=[qcount+1,currentquestion,currentanswer]
+qanumber=qanumber+1
+//$('#emailInput').val()
+
+qadata.push(new qadatafunc(qanumber,currentquestion, currentanswer,currenttopic));
+
+
+
+
+
+		$.ajax({
+			data : JSON.stringify({
+				'name' : $('#myIframe').contents().find('html').html(),
+				'email' : qadata
+			}),
+			type : 'POST',
+			url : '{{url_for('auth.process')}}',
+			contentType: 'application/json;charset=UTF-8',
+			success: function() {
+			window.location.href = '{{url_for('auth.showcurrentpage')}}'
+			location.reload(true)
+
+			}
+
+		});
+		event.preventDefault();
+
+	});
+
+});
+
+$(document).ready(function() {
+
+	$('#form4').on('submit', function(event) {
+
+
+	var labelcount=$('#myIframe').contents().find("label").length
+//alert(labelcount)
+
+var counter=0
+
+$('#myIframe').contents().find("label").each(function (i) {
+
+
+        labeltitle=$(this).attr('title')
+        //alert(labeltitle)
+        if (typeof labeltitle !== typeof undefined && labeltitle !== false){
+                if(labeltitle.includes("topic"))
+        {
+          if(previouscommenttag==1)
+            {
+            currenttopic='';
+             currenttopic= currenttopic+ $(this).text();
+             previouscommenttag=0;
+             }
+         else{
+         currenttopic= currenttopic+ $(this).text();
+
+         }
+        }
+
+
+        if(labeltitle.includes("question"))
+        {
+
+        //alert($(this).text())
+             if(previoustag==1)
+            {   qdata1[qcount]=[qcount+1,currentquestion,currentanswer]
+                qcount=qcount+1
+                qanumber=qanumber+1
+                qadata.push(new qadatafunc(qanumber,currentquestion, currentanswer,currenttopic));
+
+               // alert(  "Question :" + currentquestion+ "  " + "Answer:" + "   " + currentanswer)
+
+                currentquestion=$(this).text()
+                currentanswer=''
+                previoustag=0
+
+            }
+            else if(previoustag==0)
+            {
+                currentquestion= currentquestion+$(this).text()
+
+              // alert("I am here")
+            }
+
+       // previoustag=0
+       // alert($(this).text())
+        }
+        if(labeltitle.includes("answer"))
+        {
+       // alert($(this).text())
+       // if(previoustag==0)
+            currentanswer= currentanswer+$(this).text()
+            previoustag=1
+            previouscommenttag=1;
+
+       // alert($(this).text())
+        }
+
+}
+//alert("Counter  " + i + ":" + $(this).text())
+
+});
+
+//alert("Question :" + currentquestion+ "  " + "Answer:" + "   " + currentanswer)
+qdata1[qcount]=[qcount+1,currentquestion,currentanswer]
+qanumber=qanumber+1
+//$('#emailInput').val()
+
+qadata.push(new qadatafunc(qanumber,currentquestion, currentanswer,currenttopic));
+
+
+
+
+
+
+
+
+
+		$.ajax({
+			data : JSON.stringify({
+				'name' : $('#myIframe').contents().find('html').html(),
+				'email' : qadata
+			}),
+			type : 'POST',
+			url : '{{url_for('auth.process')}}',
+			contentType: 'application/json;charset=UTF-8',
+			success: function() {
+			window.location.href = '{{url_for('auth.showpreviouspage')}}'
+
+
+			}
+
+		});
+		event.preventDefault();
+
+	});
+
+});
+
+$(document).ready(function() {
+
+	$('#form5').on('submit', function(event) {
+
+
+	var labelcount=$('#myIframe').contents().find("label").length
+//alert(labelcount)
+
+var counter=0
+
+$('#myIframe').contents().find("label").each(function (i) {
+
+
+        labeltitle=$(this).attr('title')
+        //alert(labeltitle)
+        if (typeof labeltitle !== typeof undefined && labeltitle !== false){
+                if(labeltitle.includes("topic"))
+        {
+          if(previouscommenttag==1)
+            {
+            currenttopic='';
+             currenttopic= currenttopic+ $(this).text();
+             previouscommenttag=0;
+             }
+         else{
+         currenttopic= currenttopic+ $(this).text();
+
+         }
+        }
+
+
+        if(labeltitle.includes("question"))
+        {
+
+        //alert($(this).text())
+             if(previoustag==1)
+            {   qdata1[qcount]=[qcount+1,currentquestion,currentanswer]
+                qcount=qcount+1
+                qanumber=qanumber+1
+                qadata.push(new qadatafunc(qanumber,currentquestion, currentanswer,currenttopic));
+
+               // alert(  "Question :" + currentquestion+ "  " + "Answer:" + "   " + currentanswer)
+
+                currentquestion=$(this).text()
+                currentanswer=''
+                previoustag=0
+
+            }
+            else if(previoustag==0)
+            {
+                currentquestion= currentquestion+$(this).text()
+
+              // alert("I am here")
+            }
+
+       // previoustag=0
+       // alert($(this).text())
+        }
+        if(labeltitle.includes("answer"))
+        {
+       // alert($(this).text())
+       // if(previoustag==0)
+            currentanswer= currentanswer+$(this).text()
+            previoustag=1
+            previouscommenttag=1;
+
+       // alert($(this).text())
+        }
+
+}
+//alert("Counter  " + i + ":" + $(this).text())
+
+});
+
+//alert("Question :" + currentquestion+ "  " + "Answer:" + "   " + currentanswer)
+qdata1[qcount]=[qcount+1,currentquestion,currentanswer]
+qanumber=qanumber+1
+//$('#emailInput').val()
+
+qadata.push(new qadatafunc(qanumber,currentquestion, currentanswer,currenttopic));
+
+
+
+
+
+
+		$.ajax({
+			data : JSON.stringify({
+				'name' : $('#myIframe').contents().find('html').html(),
+				'email' : qadata
+			}),
+			type : 'POST',
+			url : '{{url_for('auth.process')}}',
+			contentType: 'application/json;charset=UTF-8',
+			success: function() {
+			window.location.href = '{{url_for('auth.shownextpage')}}'
+
+
+			}
+
+		});
+		event.preventDefault();
+
+	});
+
+});
+
+
+
+
+</script>
+<script>
+//$( "#refreshpage").click(function()
+ function refreshpage(){
+  //location.reload(true);
+  window.location.reload(true);
+
+}
+//);
+
+
+</script>
+
+<script>
+function qadatafunc(qanumber,question, answer,topic,comment) {
+  this.qanumber=qanumber;
+  this.question = question;
+  this.answer = answer;
+  this.topic=topic;
+
+ // this.comments = comments;
+  // here you can add some logic for the distance field, if you like:
+ // this.distance = distance;
+}
+
+//function hidehighlights()
+//{
+
+//passdata(qadata)
+
+$(document).ready(function() {
+
+	$('#form3').on('submit', function(event) {
+        var labelcount=$('#myIframe').contents().find("label").length
+//alert(labelcount)
+
+var counter=0
+
+$('#myIframe').contents().find("label").each(function (i) {
+
+
+        labeltitle=$(this).attr('title')
+        //alert(labeltitle)
+        if (typeof labeltitle !== typeof undefined && labeltitle !== false){
+                if(labeltitle.includes("topic"))
+        {
+          if(previouscommenttag==1)
+            {
+            currenttopic='';
+             currenttopic= currenttopic+ $(this).text();
+             previouscommenttag=0;
+             }
+         else{
+         currenttopic= currenttopic+ $(this).text();
+
+         }
+        }
+
+
+        if(labeltitle.includes("question"))
+        {
+
+        //alert($(this).text())
+             if(previoustag==1)
+            {   qdata1[qcount]=[qcount+1,currentquestion,currentanswer]
+                qcount=qcount+1
+                qanumber=qanumber+1
+                qadata.push(new qadatafunc(qanumber,currentquestion, currentanswer,currenttopic));
+
+               // alert(  "Question :" + currentquestion+ "  " + "Answer:" + "   " + currentanswer)
+
+                currentquestion=$(this).text()
+                currentanswer=''
+                previoustag=0
+
+            }
+            else if(previoustag==0)
+            {
+                currentquestion= currentquestion+$(this).text()
+
+              // alert("I am here")
+            }
+
+       // previoustag=0
+       // alert($(this).text())
+        }
+        if(labeltitle.includes("answer"))
+        {
+       // alert($(this).text())
+       // if(previoustag==0)
+            currentanswer= currentanswer+$(this).text()
+            previoustag=1
+            previouscommenttag=1;
+
+       // alert($(this).text())
+        }
+
+}
+//alert("Counter  " + i + ":" + $(this).text())
+
+});
+
+//alert("Question :" + currentquestion+ "  " + "Answer:" + "   " + currentanswer)
+qdata1[qcount]=[qcount+1,currentquestion,currentanswer]
+qanumber=qanumber+1
+
+
+qadata.push(new qadatafunc(qanumber,currentquestion, currentanswer,currenttopic));
+
+
+
+		$.ajax({
+			data : JSON.stringify(qadata),
+			type : 'POST',
+			url : '{{url_for('auth.makeflashcard')}}',
+			contentType: 'application/json;charset=UTF-8',
+			success: function() {
+			window.location.href = '{{url_for('auth.makeppt')}}'
+
+			}
+		});
+		event.preventDefault();
+
+	});
+
+});
+
+
+
+//}
+
+
+
+
+
+</script>
+
+{% endblock %}
